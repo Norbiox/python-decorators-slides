@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@slidev/cli": "^0.46.3",
+    "@slidev/theme-bricks": "^0.0.2",
+    "@slidev/theme-default": "^0.21.2",
+    "@slidev/theme-seriph": "^0.21.3",
+    "@slidev/theme-shibainu": "^0.0.2",
+    "slidev-theme-the-unnamed": "^0.0.15"
+  }
+}
