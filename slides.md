@@ -184,26 +184,8 @@ def repeat(text: str) -> str:
 
 Write a decorator that validates `text` parameter and raises and error if text is empty
 
-<div v-click="[0, 2]">
 
-```python
-def add_smile(text: str) -> str:
-    return text + " 🙂"
-```
-
-</div>
-
-<div v-click="[2, 4]">
-
-```python
-@validate_text
-def add_smile(text: str) -> str:
-    return text + " 🙂"
-```
-
-</div>
-
-<div v-click="[1, 4]">
+<div v-click>
 
 ```python
 def validate_text(func: Callable[[str], str]) -> Callable[[str], str]:
@@ -216,7 +198,37 @@ def validate_text(func: Callable[[str], str]) -> Callable[[str], str]:
 
 </div>
 
-<div v-click="[3, 4]">
+```python
+
+def add_smile(text: str) -> str:
+    return text + " 🙂"
+```
+
+<!-- src/example1.py -->
+
+---
+
+# Another use case: validation
+
+Write a decorator that validates `text` parameter and raises and error if text is empty
+
+```python
+def validate_text(func: Callable[[str], str]) -> Callable[[str], str]:
+    def inner(text: str) -> str:
+        if not text:
+          raise ValueError("Text cannot be empty!")
+        return func(text)
+    return inner
+```
+
+```python
+@validate_text
+def add_smile(text: str) -> str:
+    return text + " 🙂"
+```
+
+
+<div v-click>
 
 ```python
 >>> add_smile("")
@@ -229,6 +241,7 @@ ValueError: Text cannot be empty!
 
 <!-- src/example1.py -->
 
+---
 ---
 
 # Common case: function execution timing
@@ -364,7 +377,51 @@ def add_smile(text: str) -> str:
 
 ---
 
-# Learn More
+# Parametrized decorators
 
-TODO add links
-- [Documentations](https://sli.dev) / [GitHub Repo](https://github.com/slidevjs/slidev)
+Create a decorator that makes decorated function return specific value
+if one of specified exception occur during decorated function execution
+
+```python {0|1|2|3-4|5-8|2-9|1-10|13-18|all}
+def return_on_error(exceptions: tuple[Type[Exception], ...], returned_value: Any) -> Callable:
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def inner(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except exceptions:
+                return returned_value
+        return inner
+    return decorator
+
+@return_on_error((ZeroDivisionError,), 0.0)
+def divide(x: float, y: float) -> float:
+    if x is None:
+        raise ValueError("x cannot be None")
+    if y is None:
+        raise ValueError("y cannot be None")
+    return x / y
+```
+
+<!-- src/example4.py -->
+
+---
+
+# Wrap up
+
+<v-clicks>
+
+- Decorators bases on the fact that functions are First Class Objects
+- Decorator takes a function and returns another function
+- Decorators may be simply called with function as parameter, or used with `@decorator` syntax
+- We can use `functools.wraps` (which is also a decorator) to keep the metadata of decorated function accessible
+- It is possible to create parametrized decorators in Python
+
+</v-clicks>
+
+---
+
+# Exercises
+
+1. Write a function that takes a list of numbers and returns sum of those numbers. Then create a decorator that will validate that every value in the list is a number and raise `TypeError` if not.
+2. Write a parametrized decorator `retry_on_exception` that will retry a function `n` times if any of predefined exceptions occurs during function execution. Add ability to wait for certain number of seconds, which should also be a parameter of the decorator.
