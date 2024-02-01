@@ -360,14 +360,7 @@ def add_smile(text: str) -> str:
 
 </div>
 
-<!-- src/example1.py -->
-
----
-
-# 
-
----
-
+<!-- src/example3.py -->
 
 ---
 
